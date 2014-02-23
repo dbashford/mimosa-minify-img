@@ -74,7 +74,7 @@ var _buildFromToConfigs = function ( mimosaConfig ) {
 var _minifyImages = function( mimosaConfig ) {
   var configs = _buildFromToConfigs( mimosaConfig );
 
-  async.eachLimit( configs, 1, function( minifyConfig, next ) {
+  async.eachLimit( configs, os.cpus().length, function( minifyConfig, next ) {
     var dir = path.dirname( minifyConfig.to );
     _makeDirectory( dir );
     _minifyImage( minifyConfig.from, minifyConfig.to, mimosaConfig, next);
