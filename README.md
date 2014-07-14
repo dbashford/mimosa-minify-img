@@ -23,7 +23,6 @@ minifyImg: {
   options: {
     interlaced: false,
     progressive: false,
-    cache: false,
     optimizationLevel: 2
   },
   exts: [ "gif","jpeg","jpg","png" ]

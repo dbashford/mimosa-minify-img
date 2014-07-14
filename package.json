@@ -1,6 +1,6 @@
 {
   "name": "mimosa-minify-img",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/dbashford/mimosa-minify-img",
   "author": "David Bashford",
   "description": "A module for Mimosa to minify GIF, JPEG, JPG and PNG",
@@ -23,8 +23,8 @@
     "minify"
   ],
   "dependencies": {
-    "image-min": "0.1.3",
-    "wrench": "1.5.6",
+    "image-min": "0.4.5",
+    "wrench": "1.5.8",
     "async": "0.2.10"
   },
   "license": "MIT",

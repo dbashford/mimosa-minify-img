@@ -5,7 +5,7 @@ var fs = require( "fs" )
   , os = require( "os" )
   , wrench = require( "wrench" )
   , async = require( "async" )
-  , imagemin = require( "image-min" )
+  , Imagemin = require( "image-min" )
   , config = require( "./config" )
   , logger = null;
 
@@ -27,14 +27,27 @@ var _minifyImage = function( from, to, mimosaConfig, next ) {
     fs.unlinkSync( to );
   }
 
-  imagemin( from, to, mimosaConfig.minifyImg.options, function( err, data ) {
+  var opts = mimosaConfig.minifyImg.options;
+
+  var imagemin = new Imagemin()
+    .src(from)
+    .dest(to)
+    .use(Imagemin.jpegtran(opts.progressive))
+    .use(Imagemin.gifsicle(opts.interlaced))
+    .use(Imagemin.optipng(opts.optimizationLevel));
+
+  imagemin.optimize( function( err, data ) {
     if ( err ) {
       logger.error( "minify-img could not minify [[ " + from + " ]], ", err );
     } else {
-      if ( data.diffSizeRaw < 10 ) {
+      var oldSize = fs.statSync( from ).size;
+      var sizeDiff = oldSize - data.contents.length;
+
+      if ( sizeDiff < 10 ) {
         logger.info( "minify-img did not change [[ " + from + " ]] as it is already minified." );
       } else {
-        logger.info( "minify-img minified [[ " + from + " ]] and saved [[ " + data.diffSizeRaw + " ]]." );
+        var pct = ( sizeDiff / oldSize * 100 ).toFixed() + '%';
+        logger.info( "minify-img minified [[ " + from + " ]] and saved [[ " + pct + " (" + sizeDiff + ") ]]." );
         if ( mimosaConfig.minifyImg.overwrite ) {
           _overwriteImage( to, from );
         }

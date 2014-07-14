@@ -20,7 +20,6 @@ exports.placeholder = function () {
       "    options:                             # pass through options to https://github.com/kevva/image-min" +
       "      interlaced: false                  # Interlace gif for progressive rendering.\n" +
       "      progressive: false                 # Lossless conversion to progressive.\n" +
-      "      cache: false                       # whether or not to cache optimized images\n" +
       "      optimizationLevel: 2               # Select a optimization level between 0 and 7\n";
   return ph;
 };
@@ -33,7 +32,6 @@ exports.validate = function ( config, validators ) {
     if ( validators.ifExistsIsObject( errors, "minifyImg.options", mI.options ) ) {
       validators.ifExistsIsBoolean( errors, "minifyImg.interlaced", mI.options.interlaced );
       validators.ifExistsIsBoolean( errors, "minifyImg.progressive", mI.options.progressive );
-      validators.ifExistsIsBoolean( errors, "minifyImg.cache", mI.options.cache );
       validators.ifExistsIsNumber( errors, "minifyImg.optimizationLevel", mI.options.optimizationLevel );
     }
 
