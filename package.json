@@ -23,7 +23,7 @@
     "minify"
   ],
   "dependencies": {
-    "image-min": "0.4.5",
+    "imagemin": "3.1.0",
     "wrench": "1.5.8",
     "async": "0.2.10"
   },
