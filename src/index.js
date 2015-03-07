@@ -5,7 +5,7 @@ var fs = require( "fs" )
   , os = require( "os" )
   , wrench = require( "wrench" )
   , async = require( "async" )
-  , Imagemin = require( "image-min" )
+  , Imagemin = require( "imagemin" )
   , config = require( "./config" )
   , logger = null;
 
@@ -36,17 +36,17 @@ var _minifyImage = function( from, to, mimosaConfig, next ) {
     .use(Imagemin.gifsicle(opts.interlaced))
     .use(Imagemin.optipng(opts.optimizationLevel));
 
-  imagemin.optimize( function( err, data ) {
+  imagemin.run( function( err, files ) {
     if ( err ) {
       logger.error( "minify-img could not minify [[ " + from + " ]], ", err );
     } else {
       var oldSize = fs.statSync( from ).size;
-      var sizeDiff = oldSize - data.contents.length;
+      var sizeDiff = oldSize - files[0].contents.length;
 
       if ( sizeDiff < 10 ) {
         logger.info( "minify-img did not change [[ " + from + " ]] as it is already minified." );
       } else {
-        var pct = ( sizeDiff / oldSize * 100 ).toFixed() + '%';
+        var pct = ( sizeDiff / oldSize * 100 ).toFixed() + "%";
         logger.info( "minify-img minified [[ " + from + " ]] and saved [[ " + pct + " (" + sizeDiff + ") ]]." );
         if ( mimosaConfig.minifyImg.overwrite ) {
           _overwriteImage( to, from );
@@ -94,16 +94,21 @@ var _minifyImages = function( mimosaConfig ) {
   });
 };
 
-var registerCommand = function ( program, retrieveConfig ) {
+var registerCommand = function ( program, _logger, retrieveConfig ) {
+  logger = _logger;
+
   program
     .command( "minimage" )
     .option("-D, --mdebug", "run in debug mode")
     .option("--overwrite", "overwrite the image in the watch.sourceDir, only do this when you are happy with the minification")
     .description( "minify images from the watch.sourceDir to the watch.compiledDir" )
     .action( function( opts ){
-      retrieveConfig( false, !!opts.mdebug, function( mimosaConfig ) {
-        logger = mimosaConfig.log;
+      var retrieveConfigOpts = {
+        buildFirst: false,
+        mdebug: !!opts.mdebug
+      };
 
+      retrieveConfig( retrieveConfigOpts, function( mimosaConfig ) {
         var ms = mimosaConfig.modules;
         if ( ms.indexOf( "minify-img" ) > -1 || ms.indexOf( "mimosa-minify-img" ) > -1 ) {
           mimosaConfig.minifyImg.overwrite = !!opts.overwrite;
@@ -119,6 +124,5 @@ var registerCommand = function ( program, retrieveConfig ) {
 module.exports = {
   registerCommand: registerCommand,
   defaults:        config.defaults,
-  placeholder:     config.placeholder,
   validate:        config.validate
 };
