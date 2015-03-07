@@ -14,16 +14,6 @@ exports.defaults = function() {
   };
 };
 
-exports.placeholder = function () {
-   var ph = "  minifyImg:\n" +
-      "    exts: ['gif','jpeg','jpg','png' ]    # extensions to minify\n" +
-      "    options:                             # pass through options to https://github.com/kevva/image-min" +
-      "      interlaced: false                  # Interlace gif for progressive rendering.\n" +
-      "      progressive: false                 # Lossless conversion to progressive.\n" +
-      "      optimizationLevel: 2               # Select a optimization level between 0 and 7\n";
-  return ph;
-};
-
 exports.validate = function ( config, validators ) {
   var errors = [];
 
