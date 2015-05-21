@@ -31,7 +31,7 @@ var _minifyImage = function( from, to, mimosaConfig, next ) {
 
   var imagemin = new Imagemin()
     .src(from)
-    .dest(to)
+    .dest(path.dirname(to))
     .use(Imagemin.jpegtran(opts.progressive))
     .use(Imagemin.gifsicle(opts.interlaced))
     .use(Imagemin.optipng(opts.optimizationLevel));
